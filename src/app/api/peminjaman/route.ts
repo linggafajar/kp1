@@ -2,12 +2,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 
-// GET: Ambil semua data peminjaman
 export async function GET() {
   try {
     const data = await prisma.peminjamanBarang.findMany({
       include: {
-        barang: true, // tampilkan juga data barang
+        barang: true,
       },
       orderBy: {
         tanggalPengajuan: "desc",
@@ -21,7 +20,6 @@ export async function GET() {
   }
 }
 
-// POST: Tambah data peminjaman
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
@@ -34,6 +32,7 @@ export async function POST(req: NextRequest) {
       jumlahBarang,
       tanggalPengajuan,
       tanggalPengembalian,
+      userId, // ✅ pastikan frontend mengirimkan ini
     } = body;
 
     if (
@@ -43,7 +42,8 @@ export async function POST(req: NextRequest) {
       barangId === undefined ||
       jumlahBarang === undefined ||
       !tanggalPengajuan ||
-      !tanggalPengembalian
+      !tanggalPengembalian ||
+      userId === undefined // ✅ tambahkan validasi userId
     ) {
       return NextResponse.json(
         { message: "Field yang dibutuhkan tidak lengkap" },
@@ -74,6 +74,7 @@ export async function POST(req: NextRequest) {
           jumlahBarang: Number(jumlahBarang),
           tanggalPengajuan: new Date(tanggalPengajuan),
           tanggalPengembalian: new Date(tanggalPengembalian),
+          userId: Number(userId), // ✅ ini baris yang paling penting
         },
       }),
       prisma.barang.update({
