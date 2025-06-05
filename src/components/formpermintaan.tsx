@@ -68,7 +68,7 @@ export default function PermintaanBarangForm() {
 
       if (!res.ok) throw new Error("Gagal mengirim permintaan")
 
-      const result = await someFunction();
+      //const result = await someFunction();
       console.log(result); // atau gunakan untuk logika lain
 
 
