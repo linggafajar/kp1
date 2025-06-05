@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import Image from 'next/image';
 
 export default function LoginPage() {
   const [identifier, setIdentifier] = useState("")
@@ -51,7 +52,8 @@ export default function LoginPage() {
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
       <Card className="w-full max-w-md shadow-lg">
         <CardHeader className="flex flex-col items-center space-y-2">
-          <img src="/logo.png" alt="Logo" className="w-20 h-20 object-contain" />
+          <Image src="/path/to/image.jpg" alt="desc" width={100} height={100} />
+
           <CardTitle className="text-center text-2xl">Login</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
