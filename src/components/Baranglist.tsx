@@ -15,21 +15,26 @@ export default function BarangList() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
-  useEffect(() => {
-    async function fetchBarang() {
-      try {
-        const res = await fetch("/api/barang")
-        if (!res.ok) throw new Error("Gagal mengambil data")
-        const data = await res.json()
-        setBarang(data)
-      } catch (err: any) {
+useEffect(() => {
+  async function fetchBarang() {
+    try {
+      const res = await fetch("/api/barang")
+      if (!res.ok) throw new Error("Gagal mengambil data")
+      const data = await res.json()
+      setBarang(data)
+    } catch (err) {
+      if (err instanceof Error) {
         setError(err.message)
-      } finally {
-        setLoading(false)
+      } else {
+        setError(String(err))
       }
+    } finally {
+      setLoading(false)
     }
-    fetchBarang()
-  }, [])
+  }
+  fetchBarang()
+}, [])
+
 
   if (loading) return <p>Loading...</p>
   if (error) return <p>Error: {error}</p>
