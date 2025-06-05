@@ -66,10 +66,10 @@ export default function PermintaanBarangForm() {
         body: JSON.stringify(data),
       })
 
-      if (!res.ok) throw new Error("Gagal mengirim permintaan")
+if (!res.ok) throw new Error("Gagal mengirim permintaan");
 
-      //const result = await someFunction();
-      console.log(result); // atau gunakan untuk logika lain
+console.log("Permintaan berhasil dikirim");
+
 
 
       // Reset form
