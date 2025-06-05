@@ -1,4 +1,3 @@
-// src/app/api/barang/[id]/route.ts
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 
@@ -7,6 +6,10 @@ export async function GET(
   { params }: { params: { id: string } }
 ) {
   const id = Number(params.id);
+  if (isNaN(id)) {
+    return NextResponse.json({ error: "ID tidak valid" }, { status: 400 });
+  }
+
   try {
     const barang = await prisma.barang.findUnique({
       where: { id },
@@ -28,6 +31,9 @@ export async function PATCH(
   { params }: { params: { id: string } }
 ) {
   const id = Number(params.id);
+  if (isNaN(id)) {
+    return NextResponse.json({ error: "ID tidak valid" }, { status: 400 });
+  }
 
   try {
     const body = await req.json();
@@ -58,6 +64,9 @@ export async function DELETE(
   { params }: { params: { id: string } }
 ) {
   const id = Number(params.id);
+  if (isNaN(id)) {
+    return NextResponse.json({ error: "ID tidak valid" }, { status: 400 });
+  }
 
   try {
     // Hapus relasi di peminjamanBarang
