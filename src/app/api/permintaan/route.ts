@@ -1,17 +1,41 @@
 import { NextRequest, NextResponse } from "next/server";
+import prisma from "@/lib/prisma";
+
+// Ambil semua data permintaan
+export async function GET() {
+  try {
+    const data = await prisma.permintaanBarang.findMany({
+      include: {
+        barang: true,
+        user: true, // kalau ingin tampilkan data user
+      },
+      orderBy: { tanggal: "desc" },
+    });
+    return NextResponse.json(data);
+  } catch (error) {
+    console.error("Gagal mengambil data permintaan:", error);
+    return NextResponse.json({ message: "Gagal mengambil data" }, { status: 500 });
+  }
+}
+
+// Buat permintaan baru
 export async function POST(req: NextRequest) {
   try {
-    // Contoh ambil userId dari token/session, sesuaikan implementasimu
-    const userId = getUserIdFromRequest(req); // Buat fungsi ini sendiri sesuai autentikasi
-
     const body = await req.json();
-    const { nama, jabatan, kelas, keperluan, barangId, jumlah, tanggal } = body;
+    const {
+      userId,
+      nama,
+      jabatan,
+      kelas,
+      keperluan,
+      barangId,
+      jumlah,
+      tanggal,
+    } = body;
 
-    if (!userId) {
-      return NextResponse.json({ message: "User tidak terautentikasi" }, { status: 401 });
-    }
-
+    // Validasi
     if (
+      userId === undefined ||
       !nama ||
       !jabatan ||
       !keperluan ||
@@ -40,6 +64,7 @@ export async function POST(req: NextRequest) {
     await prisma.$transaction([
       prisma.permintaanBarang.create({
         data: {
+          userId: Number(userId),
           nama,
           jabatan,
           kelas: kelas || "",
@@ -47,7 +72,7 @@ export async function POST(req: NextRequest) {
           barangId: Number(barangId),
           jumlah: Number(jumlah),
           tanggal: new Date(tanggal),
-          userId: Number(userId),
+          status: "pending", // default
         },
       }),
       prisma.barang.update({
