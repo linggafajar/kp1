@@ -1,0 +1,71 @@
+// schema.prisma
+datasource db {
+  provider = "postgresql" // atau mysql, sqlite, dsb.
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id        Int     @id @default(autoincrement())
+  name      String
+  username  String  @unique
+  email     String  @unique
+  password  String
+  role      String  @default("user") // "user" atau "admin"
+  createdAt DateTime @default(now())
+
+  peminjamans PeminjamanBarang[]
+  permintaans PermintaanBarang[]
+}
+
+model Barang {
+  id        Int     @id @default(autoincrement())
+  nama      String
+  jenis     String
+  stok      Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  peminjaman PeminjamanBarang[]
+  permintaan PermintaanBarang[]
+}
+
+model PeminjamanBarang {
+  id                  Int      @id @default(autoincrement())
+  userId              Int
+  barangId            Int
+  nama                String   // nama peminjam
+  jabatan             String
+  kelas               String?
+  keperluan           String
+  jumlahBarang        Int
+  tanggalPengajuan    DateTime
+  tanggalPengembalian DateTime
+  status              String   @default("pending") // pending, approved, rejected
+  catatan             String?
+  createdAt           DateTime @default(now())
+
+  user    User   @relation(fields: [userId], references: [id])
+  barang  Barang @relation(fields: [barangId], references: [id])
+}
+
+model PermintaanBarang {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  barangId  Int
+  nama      String   // nama pemohon
+  jabatan   String
+  kelas     String
+  keperluan String
+  jumlah    Int
+  tanggal   DateTime
+  status    String   @default("pending") // pending, approved, rejected
+  catatan   String?
+  createdAt DateTime @default(now())
+
+  user    User   @relation(fields: [userId], references: [id])
+  barang  Barang @relation(fields: [barangId], references: [id])
+}
